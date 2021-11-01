@@ -6,6 +6,7 @@ export default function Home() {
     const [stateShortUrl, setStateShortUrl] = useState('')
     const [stateShortToken, setStateShortToken] = useState('')
     const [fetchedLongUrl, setFetchedLongUrl] = useState('')
+    const [errorLongUrl, setErrorLongUrl] = useState('')
 
 
     const getShortUrl = async longUrl => {
@@ -24,6 +25,7 @@ export default function Home() {
     } 
 
     const getLongUrl = async shortToken => {
+        setErrorLongUrl('');
         const response = await fetch(
             'https://9igdoacex0.execute-api.us-east-1.amazonaws.com/dev?short_url='+shortToken, {
                 method : "GET",
@@ -33,7 +35,11 @@ export default function Home() {
         ).then(response => response.json())
         .then(data => {
             console.log("data is : ", data);
-            setFetchedLongUrl(JSON.parse(data.body)['long_url']);
+            if(data.statusCode == 200)
+                setFetchedLongUrl(JSON.parse(data.body)['long_url']);
+            else
+                setErrorLongUrl(JSON.parse(data.body)['error_msg'])
+
         })
         .catch(error => console.error('Error:', error))
     } 
@@ -58,6 +64,7 @@ export default function Home() {
         <input type="text" onChange={(e) => setStateShortToken(e.target.value)} ></input>
         <button onClick={() => getLongUrl(stateShortToken)}>Get Long Url</button>
         {fetchedLongUrl? <p>Long url from token is <b>{fetchedLongUrl}</b> </p> : ''}
+        {errorLongUrl && <p>{errorLongUrl}</p> }
         
 
     </div>
