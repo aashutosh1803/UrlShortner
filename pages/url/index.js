@@ -8,7 +8,6 @@ export default function Home() {
     const [fetchedLongUrl, setFetchedLongUrl] = useState('')
     const [errorLongUrl, setErrorLongUrl] = useState('')
 
-
     const getShortUrl = async longUrl => {
         const response = await fetch('https://9igdoacex0.execute-api.us-east-1.amazonaws.com/dev/', {
             method: 'POST',
@@ -26,6 +25,7 @@ export default function Home() {
 
     const getLongUrl = async shortToken => {
         setErrorLongUrl('');
+        setFetchedLongUrl('');
         const response = await fetch(
             'https://9igdoacex0.execute-api.us-east-1.amazonaws.com/dev?short_url='+shortToken, {
                 method : "GET",
@@ -55,7 +55,7 @@ export default function Home() {
         <h1>Welcome to Url Shortner!</h1>
 
         <h4> Enter Long Url to get converted to Short Token</h4>
-        <input type="text" onChange={(e) => setStateLongUrl(e.target.value)} ></input>
+        <input type="text"  placeholder="Enter an URL" onChange={(e) => setStateLongUrl(e.target.value)} ></input>
         <button onClick={() => getShortUrl(stateLongUrl)}>Get Short Url</button>
         {stateShortUrl? <p>Short url token is <b>{stateShortUrl}</b> </p> : ''}
         <br/>
